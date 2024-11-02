@@ -48,7 +48,7 @@ const ItemDescription = ({ product }) => {
         >
           {isLoading ? "Adding..." : "Add to Favorites"} <Heart />
         </button>
-        {isError && <p className="text-red-500">Failed to add to favorites</p>}
+        {/* {isError && <p className="text-red-500">Failed to add to favorites</p>} */}
 
         <ProductDetailDialog product={product} />
       </div>

@@ -16,7 +16,7 @@ const Favorite = () => {
   if (isError) return <p className="text-center">Error loading favorites.</p>;
 
   return (
-    <div className="p-3">
+    <div className="p-3 min-h-screen">
       <h1 className="text-center text-2xl my-6">Your Most Loved Items</h1>
       <div className="flex flex-row flex-wrap justify-center items-center">
         {favorites.map((item) => (

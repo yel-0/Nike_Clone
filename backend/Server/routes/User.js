@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const router = express.Router();
 const bcrypt = require("bcrypt");
+const { verifyToken } = require("../middware/Auth");
 
 const secretKey = process.env.SECRET_KEY;
 
@@ -108,6 +109,25 @@ router.delete("/delete/:userId", async (req, res) => {
   } catch (error) {
     console.error("Error deleting user:", error);
     res.status(500).json({ message: "Error deleting user", error });
+  }
+});
+
+router.get("/current-user/admin-status", verifyToken, async (req, res) => {
+  const userId = req.user.userId;
+
+  try {
+    // Find the user by ID
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Respond with the admin status
+    res.json({ isAdmin: user.isAdmin });
+  } catch (error) {
+    console.error("Error checking admin status:", error);
+    res.status(500).json({ message: "Error checking admin status", error });
   }
 });
 

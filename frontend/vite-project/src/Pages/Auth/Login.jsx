@@ -3,11 +3,13 @@ import { useMutation } from "react-query";
 import axios from "axios";
 import nikelogo from "../../assets/images/nikelogo.jpg";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/Provider/AuthProvider";
 
 const Login = () => {
   const emailRef = useRef();
   const passwordRef = useRef();
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const loginMutation = useMutation(
     (formData) =>
@@ -16,8 +18,8 @@ const Login = () => {
         .then((response) => response.data.token),
     {
       onSuccess: (token) => {
-        localStorage.setItem("token", token);
-        alert("Login successful!");
+        login(token);
+
         navigate("/");
       },
       onError: (error) => {

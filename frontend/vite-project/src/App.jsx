@@ -17,11 +17,18 @@ import AdminCategory from "./Pages/Admin/AdminCategory";
 import Login from "./Pages/Auth/Login";
 import Register from "./Pages/Auth/Register";
 import AdminProductUpdate from "./Pages/Admin/AdminProductUpdate";
+import { useLocation } from "react-router-dom";
+import Forbidden from "./Pages/Forbidden/Forbidden";
+import NoMatch from "./Pages/NoMatch/NoMatch";
 function App() {
+  const location = useLocation();
+  const hideFooterRoutes = ["/admin", "/login", "/register"];
+  const shouldHideFooter = hideFooterRoutes.some((route) =>
+    location.pathname.startsWith(route)
+  );
   return (
     <div>
       <Navbar />
-
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
@@ -31,7 +38,8 @@ function App() {
         <Route path="/favorite" element={<Favorite />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-
+        <Route path="/forbidden" element={<Forbidden />} />
+        <Route path="*" element={<NoMatch />} />
         <Route path="/admin" element={<Admin />}>
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="create/product" element={<CreateProductPage />} />
@@ -45,7 +53,7 @@ function App() {
           <Route path="categories" element={<AdminCategory />} />
         </Route>
       </Routes>
-      {/* <Footer /> */}
+      {!shouldHideFooter && <Footer />}
     </div>
   );
 }

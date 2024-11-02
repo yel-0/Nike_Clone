@@ -1,4 +1,3 @@
-// src/api/axiosInstance.js
 import axios from "axios";
 
 const axiosInstance = axios.create({
@@ -8,12 +7,13 @@ const axiosInstance = axios.create({
   },
 });
 
-// Add a request interceptor to include the Bearer token from localStorage
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`;
+    // Get the token from local storage
+    const tokenData = JSON.parse(localStorage.getItem("token"));
+    if (tokenData && tokenData.expiresAt > new Date().getTime()) {
+      // If token is available and valid, set the Authorization header
+      config.headers["Authorization"] = `Bearer ${tokenData.value}`;
     }
     return config;
   },

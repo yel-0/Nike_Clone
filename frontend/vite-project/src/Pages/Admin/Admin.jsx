@@ -1,5 +1,5 @@
-import React from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import AdminSideBar from "@/Design/Admin/AdminSideBar";
 import {
@@ -11,13 +11,22 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import DiscoverSidebar from "@/Design/User/DiscoverSidebar";
+import { useAuth } from "@/Provider/AuthProvider";
 
 const Admin = () => {
+  const { data, isLoading } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const currentPath = location.pathname.split("/").filter(Boolean);
 
   // Conditions to determine which sidebar to use
   const isProductsPage = currentPath.includes("products");
+  useEffect(() => {
+    if (!isLoading && !data) {
+      // Redirect to /forbidden if the user is not an admin
+      navigate("/forbidden");
+    }
+  }, [isLoading, data, navigate]);
 
   return (
     <SidebarProvider>

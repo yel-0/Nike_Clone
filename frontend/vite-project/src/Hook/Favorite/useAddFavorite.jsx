@@ -1,19 +1,25 @@
 import { useMutation } from "react-query";
 import axiosInstance from "@/api/axiosInstance";
+import { useToast } from "@/hooks/use-toast";
 const addFavorite = async (productId) => {
   const response = await axiosInstance.post("/favorite/add", { productId });
   return response.data;
 };
 
 export const useAddFavorite = () => {
+  const { toast } = useToast();
+
   return useMutation(addFavorite, {
     onSuccess: (data) => {
-      console.log("Product added to favorites:", data);
-      alert("success");
+      toast({
+        title: "Add to favorite successfully",
+      });
     },
     onError: (error) => {
-      console.error("Error adding product to favorites:", error);
-      alert("error");
+      toast({
+        variant: "destructive",
+        title: "Something went wrong",
+      });
     },
   });
 };

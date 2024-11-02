@@ -1,5 +1,6 @@
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import axiosInstance from "@/api/axiosInstance";
+import { useToast } from "@/hooks/use-toast";
 
 // Function to call the API to remove a favorite
 const removeFavorite = async (productId) => {
@@ -9,13 +10,21 @@ const removeFavorite = async (productId) => {
 
 // Custom hook to use removeFavorite
 export const useRemoveFavorite = () => {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
   return useMutation(removeFavorite, {
     onSuccess: () => {
-      alert("success");
+      queryClient.invalidateQueries("favorites");
+      toast({
+        title: "Remove item successfully",
+      });
     },
     onError: (error) => {
-      console.error("Error removing favorite:", error);
-      alert("error");
+      toast({
+        variant: "destructive",
+        title: "Something went wrong",
+      });
     },
   });
 };

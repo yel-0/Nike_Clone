@@ -5,7 +5,7 @@ import ItemCarousel from "@/Design/User/ItemCarousel";
 
 const Home = () => {
   return (
-    <div>
+    <div className="mb-10">
       <HeroSection />
       <ItemCarousel category={"shoes"} title={"Our Latest Products"} />
       <ItemCarousel category={"Hoodies"} title={"Stay Warm, Stay Stylish"} />
