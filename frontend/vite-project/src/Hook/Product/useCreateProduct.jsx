@@ -10,8 +10,8 @@ const createProduct = async (productData) => {
   return response.data;
 };
 
-const useCreateProduct = () => {
-  return useMutation(createProduct);
+const useCreateProduct = (options) => {
+  return useMutation(createProduct, options);
 };
 
 export default useCreateProduct;

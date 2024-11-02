@@ -63,4 +63,52 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.get("/all", async (req, res) => {
+  const { page = 1, limit = 10 } = req.query;
+
+  try {
+    // Convert `page` and `limit` to integers
+    const pageInt = parseInt(page, 10);
+    const limitInt = parseInt(limit, 10);
+
+    // Fetch users with pagination
+    const users = await User.find()
+      .skip((pageInt - 1) * limitInt)
+      .limit(limitInt)
+      .lean();
+
+    // Get total user count for pagination info
+    const totalUsers = await User.countDocuments();
+
+    res.json({
+      users,
+      totalUsers,
+      totalPages: Math.ceil(totalUsers / limitInt),
+      currentPage: pageInt,
+    });
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ message: "Error fetching users", error });
+  }
+});
+
+// Route to delete a user by userId
+router.delete("/delete/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    // Find the user by ID and delete
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ message: "User deleted successfully", deletedUser });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res.status(500).json({ message: "Error deleting user", error });
+  }
+});
+
 module.exports = router;

@@ -7,9 +7,14 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import useAllProducts from "@/Hook/Product/useAllProducts";
-const ItemCarousel = ({ title }) => {
-  const { data: products, isLoading, isError } = useAllProducts();
+import useLatestProductsByCategoryName from "@/Hook/Product/useLatestProductsByCategoryName";
+
+const ItemCarousel = ({ title, category }) => {
+  const {
+    data: products,
+    isLoading,
+    isError,
+  } = useLatestProductsByCategoryName(category);
 
   if (isLoading) {
     return <p>Loading products...</p>;
@@ -24,9 +29,9 @@ const ItemCarousel = ({ title }) => {
       <div className="flex flex-row h-[70px] justify-start items-center py-2">
         <div className="text-2xl select-none">{title}</div>
       </div>
-      <Carousel className="w-full">
+      <Carousel className="w-full" loop>
         <CarouselContent>
-          {products.map((product) => (
+          {products?.map((product) => (
             <CarouselItem key={product._id} className="basis-1/3">
               <Item product={product} />
             </CarouselItem>

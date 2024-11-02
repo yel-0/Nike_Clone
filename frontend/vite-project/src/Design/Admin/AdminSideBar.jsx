@@ -13,8 +13,8 @@ import {
 // Menu items.
 const items = [
   {
-    title: "Home",
-    url: "/admin/home",
+    title: "Dashboard",
+    url: "/admin/dashboard",
     icon: Home,
   },
   {
@@ -27,11 +27,7 @@ const items = [
     url: "/admin/categories",
     icon: Tag,
   },
-  {
-    title: "Favorites",
-    url: "/admin/favorites",
-    icon: Heart,
-  },
+
   {
     title: "Settings",
     url: "/admin/settings",

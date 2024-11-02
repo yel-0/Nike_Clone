@@ -5,14 +5,8 @@ const createCategory = async (categoryData) => {
   return response.data;
 };
 
-const useCreateCategory = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation(createCategory, {
-    onSuccess: () => {
-      queryClient.invalidateQueries("categories");
-    },
-  });
+const useCreateCategory = (option) => {
+  return useMutation(createCategory, option);
 };
 
 export default useCreateCategory;

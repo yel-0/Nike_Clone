@@ -1,4 +1,3 @@
-import DiscoverSidebar from "@/Design/User/DiscoverSidebar";
 import React, { useState } from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import {
@@ -8,36 +7,53 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import useAllProducts from "@/Hook/Product/useAllProducts";
 import Item from "@/Design/Shared/Item";
+import useInfiniteFilterProduct from "@/Hook/Product/useInfiniteFilterProduct";
+import DiscoverSidebar from "@/Design/User/DiscoverSidebar";
 
 const Discover = () => {
-  const { data: products, isLoading, isError, error } = useAllProducts(); // Use the hook
+  const [filters, setFilters] = useState({
+    categoryId: undefined,
+    sortBy: "priceAsc",
+    gender: "",
+    colors: [],
+    ageGroup: "",
+    useFor: "",
+  });
 
-  if (isLoading) {
-    return <p>Loading...</p>; // Show loading state
-  }
+  const {
+    data,
+    isLoading,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteFilterProduct(filters);
 
-  if (isError) {
-    return <p>Error: {error.message}</p>; // Show error message
-  }
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error loading products.</div>;
+
   return (
     <SidebarProvider>
       <div className="relative">
-        <DiscoverSidebar />
+        <DiscoverSidebar filters={filters} setFilters={setFilters} />
       </div>
 
-      <main className="p-6 relative">
-        <div className="flex flex-row justify-end gap-3 sticky bg-white top-0 py-3 items-center ">
-          <div className="flex flex-row justify-center items-center gap-1 ">
+      <main className="p-6 relative w-full">
+        <div className="flex flex-row justify-end gap-3 sticky bg-white top-0 py-3 items-center">
+          <div className="flex flex-row justify-center items-center gap-1">
             <SidebarTrigger /> <div>Hide Filter</div>
           </div>
           <div>
-            <Select>
-              <SelectTrigger
-                className="border-none focus:ring-0 focus:border-none
-"
-              >
+            <Select
+              onValueChange={(value) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  sortBy: value === "price_low_high" ? "priceAsc" : "priceDesc",
+                }))
+              }
+            >
+              <SelectTrigger className="border-none focus:ring-0 focus:border-none">
                 <SelectValue placeholder="Sort By" />
               </SelectTrigger>
               <SelectContent>
@@ -47,28 +63,30 @@ const Discover = () => {
                 <SelectItem value="price_high_low">
                   Price: High to Low
                 </SelectItem>
-                <SelectItem value="featured">Featured</SelectItem>
-                <SelectItem value="newest">Newest</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {products.map((product, index) => (
-            <Item key={index} product={product} />
-          ))}
+          {data.pages.map((page, pageIndex) =>
+            page.map((product, index) => (
+              <Item key={`${pageIndex}-${index}`} product={product} />
+            ))
+          )}
         </div>
 
-        {/* {visibleSneakers < sneakerData.length && (
+        {hasNextPage && (
           <div className="flex justify-center mt-6">
             <button
-              onClick={loadMoreSneakers}
+              onClick={() => fetchNextPage()}
+              disabled={isFetchingNextPage}
               className="bg-black text-white px-6 py-2 rounded-full hover:bg-gray-700 transition duration-300"
             >
-              Load More
+              {isFetchingNextPage ? "Loading..." : "Load More"}
             </button>
           </div>
-        )} */}
+        )}
       </main>
     </SidebarProvider>
   );

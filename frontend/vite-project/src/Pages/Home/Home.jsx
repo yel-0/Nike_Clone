@@ -1,15 +1,20 @@
 import React from "react";
 
 import HeroSection from "@/Design/User/HeroSection";
-import SneakerCarousel from "@/Design/User/ItemCarousel";
+import ItemCarousel from "@/Design/User/ItemCarousel";
 
 const Home = () => {
   return (
     <div>
       <HeroSection />
-      <SneakerCarousel title={"New in this week"} />
-      <SneakerCarousel title={"Move like a motion"} />
-      <SneakerCarousel title={"Fancy is power"} />
+      <ItemCarousel category={"shoes"} title={"Our Latest Products"} />
+      <ItemCarousel category={"Hoodies"} title={"Stay Warm, Stay Stylish"} />
+      <ItemCarousel
+        category={"Tops & T-Shirts"}
+        title={"Elevate Your Everyday Look"}
+      />
+
+      {/* <SneakerCarousel title={"Fancy is power"} /> */}
     </div>
   );
 };

@@ -2,6 +2,7 @@ const Product = require("../models/Product");
 const cloudinary = require("../config/cloudinary");
 const fs = require("fs");
 const path = require("path");
+const Category = require("../models/Category");
 
 // Create a new product with images
 exports.createProduct = async (req, res) => {
@@ -45,39 +46,54 @@ exports.createProduct = async (req, res) => {
 // Update an existing product
 exports.updateProduct = async (req, res) => {
   const { id } = req.params;
-  const newImages = req.files ? req.files.map((file) => file.path) : null;
+  const newImages = req.files ? req.files.map((file) => file.path) : [];
 
   try {
-    // Fetch the current product to check its existing images
     const product = await Product.findById(id);
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
 
+    let updatedImages;
+    if (Array.isArray(req.body.images)) {
+      // If images is already an array, use it directly
+      updatedImages = req.body.images;
+    } else if (
+      typeof req.body.images === "string" &&
+      req.body.images.startsWith("[")
+    ) {
+      // If images is a JSON string of an array, parse it
+      updatedImages = JSON.parse(req.body.images);
+    } else if (typeof req.body.images === "string") {
+      // If images is a single URL string, wrap it in an array
+      updatedImages = [req.body.images];
+    } else {
+      // If images is undefined or not valid, set to empty array
+      updatedImages = [];
+    }
+
     // Get existing images from the database
     const existingImages = product.imageUrl || [];
-    const updatedImages = req.body.images || []; // URLs of images to keep
 
-    // Find images to delete from the server
+    // Find images to delete
     const imagesToDelete = existingImages.filter(
       (img) => !updatedImages.includes(img)
     );
 
-    // Delete images that are no longer in the updated images list from Cloudinary
+    // Delete images from Cloudinary
     await Promise.all(
       imagesToDelete.map(async (imageUrl) => {
-        const publicId = imageUrl.split("/").slice(-1)[0].split(".")[0];
+        const publicId = imageUrl.split("/").pop().split(".")[0];
         await cloudinary.uploader.destroy(`product_images/${publicId}`);
       })
     );
 
-    // Prepare the updated data
+    // Combine updated and new images
     const updatedData = {
       ...req.body,
-      imageUrl: [...updatedImages, ...(newImages || [])], // Combine existing with new images
+      imageUrl: [...updatedImages, ...newImages],
     };
 
-    // Update the product in the database
     const updatedProduct = await Product.findByIdAndUpdate(id, updatedData, {
       new: true,
     });
@@ -86,21 +102,14 @@ exports.updateProduct = async (req, res) => {
   } catch (error) {
     console.error("Error updating product:", error);
 
-    // Cleanup: Delete newly uploaded images if any error occurs
+    // Cleanup newly uploaded images if an error occurs
     if (newImages) {
-      try {
-        await Promise.all(
-          newImages.map(async (newImage) => {
-            const publicId = newImage.split("/").slice(-1)[0].split(".")[0];
-            await cloudinary.uploader.destroy(`product_images/${publicId}`);
-          })
-        );
-      } catch (cleanupError) {
-        console.error(
-          "Error deleting newly uploaded images during cleanup:",
-          cleanupError
-        );
-      }
+      await Promise.all(
+        newImages.map(async (newImage) => {
+          const publicId = newImage.split("/").pop().split(".")[0];
+          await cloudinary.uploader.destroy(`product_images/${publicId}`);
+        })
+      );
     }
 
     res.status(500).json({ message: "Error updating product", error });
@@ -161,7 +170,14 @@ exports.getProductById = async (req, res) => {
 // Get all products
 exports.getAllProducts = async (req, res) => {
   try {
+    const page = parseInt(req.query.page); // Default to page 1
+    const limit = parseInt(req.query.limit); // Default to 10 products per page
+    const skip = (page - 1) * limit;
+
     const products = await Product.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
       .populate({
         path: "category",
         select: "name",
@@ -171,7 +187,7 @@ exports.getAllProducts = async (req, res) => {
         select: "name price",
       })
       .select(
-        "name description price sizes colors stock useFor gender ageGroup keyFeatures tags imageUrl"
+        "name description price sizes colors stock useFor gender ageGroup keyFeatures tags imageUrl createdAt"
       )
       .lean();
 
@@ -183,6 +199,7 @@ exports.getAllProducts = async (req, res) => {
           : [],
     }));
 
+    // Send only the products without pagination info
     res.status(200).json(modifiedProducts);
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -233,33 +250,33 @@ exports.getFilteredProducts = async (req, res) => {
   const {
     categoryId,
     gender,
-    colors,
+    colors, // Expecting colors to be an array from the frontend
     ageGroup,
     useFor,
     sortBy,
     page = 1,
-    limit = 15,
+    limit = 10,
   } = req.query;
-  console.log("hello filter");
 
   const filter = {};
 
-  // Filter by category
+  // Applying filters based on request query parameters
   if (categoryId) filter.category = categoryId;
-
-  // Filter by gender
   if (gender) filter.gender = gender;
 
-  // Filter by colors
-  if (colors) filter.colors = { $in: colors.split(",") };
+  // Colors filtering
+  if (colors) {
+    // Split colors into an array if it is provided as a comma-separated string
+    const colorArray = Array.isArray(colors) ? colors : colors.split(",");
 
-  // Filter by age group
+    // Use the $in operator to filter products that have any of the specified colors
+    filter.colors = { $in: colorArray };
+  }
+
   if (ageGroup) filter.ageGroup = ageGroup;
-
-  // Filter by useFor
   if (useFor) filter.useFor = useFor;
 
-  // Sorting
+  // Setting sorting options
   const sortOptions = {};
   if (sortBy === "priceAsc") sortOptions.price = 1;
   if (sortBy === "priceDesc") sortOptions.price = -1;
@@ -278,10 +295,11 @@ exports.getFilteredProducts = async (req, res) => {
         "name description price sizes colors stock useFor gender ageGroup keyFeatures tags imageUrl"
       )
       .sort(sortOptions)
-      .skip((page - 1) * limit)
-      .limit(parseInt(limit))
+      .skip((parseInt(page) - 1) * parseInt(limit)) // Dynamically set skip based on page from frontend
+      .limit(parseInt(limit)) // Limit per request
       .lean();
 
+    // Modify products to include only the first image URL if it’s an array
     const modifiedProducts = products.map((product) => ({
       ...product,
       imageUrl:
@@ -293,8 +311,56 @@ exports.getFilteredProducts = async (req, res) => {
     res.status(200).json(modifiedProducts);
   } catch (error) {
     console.error("Error fetching filtered products:", error);
+    res.status(500).json({
+      message: "Error fetching filtered products",
+      error: error.message,
+    });
+  }
+};
+
+exports.getLatestProductsByCategoryName = async (req, res) => {
+  const { categoryName } = req.query; // Get category name from query params
+  const limit = 10; // Limit to the latest 10 products
+
+  try {
+    // Find the unique category by its name
+    const category = await Category.findOne({
+      name: new RegExp(`^${categoryName}$`, "i"),
+    });
+
+    // If the category doesn't exist, respond with a 404 error
+    if (!category) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+
+    // console.log(category._id.toString());
+    // Fetch the latest products in the found category
+    const products = await Product.find({ category: category._id })
+      .sort({ createdAt: -1 }) // Sort by creation date (latest first)
+      .limit(limit)
+      .populate({
+        path: "category",
+        select: "name",
+      })
+      .select(
+        "name description price stock colors useFor gender ageGroup keyFeatures tags imageUrl"
+      )
+      .lean();
+
+    // Modify products to keep only the first image
+    const modifiedProducts = products.map((product) => ({
+      ...product,
+      imageUrl:
+        Array.isArray(product.imageUrl) && product.imageUrl.length > 0
+          ? [product.imageUrl[0]] // Keep only the first image in imageUrl
+          : [],
+    }));
+
+    res.status(200).json(modifiedProducts);
+  } catch (error) {
+    console.error("Error fetching products by category name:", error);
     res
       .status(500)
-      .json({ message: "Error fetching filtered products", error });
+      .json({ message: "Error fetching products by category name", error });
   }
 };

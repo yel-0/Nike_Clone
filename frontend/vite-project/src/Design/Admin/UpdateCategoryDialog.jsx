@@ -7,15 +7,37 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import useUpdateCategory from "@/Hook/Category/useUpdateCategory";
+import { useQueryClient } from "react-query";
+import { useToast } from "@/hooks/use-toast";
 const UpdateCategoryDialog = ({ category }) => {
   const [name, setName] = useState(category.name);
+  const [open, setOpen] = useState(false);
+
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
   const {
     mutate: updateCategory,
     isLoading,
     isError,
     error,
     isSuccess,
-  } = useUpdateCategory();
+  } = useUpdateCategory({
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["categories"]);
+
+      toast({
+        title: "Category Update successfully",
+      });
+      setOpen(false);
+    },
+    onError: (err) => {
+      toast({
+        variant: "destructive",
+        title: "Something went wrong",
+      });
+    },
+  });
 
   const handleUpdate = () => {
     if (name.trim()) {
@@ -24,7 +46,7 @@ const UpdateCategoryDialog = ({ category }) => {
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger className="bg-blue-500 text-white hover:bg-blue-600 py-1 px-2 text-sm rounded-md shadow-md">
         Update
       </DialogTrigger>
@@ -47,10 +69,6 @@ const UpdateCategoryDialog = ({ category }) => {
           >
             {isLoading ? "Updating..." : "Save Changes"}
           </button>
-          {isError && <p className="text-red-500">Error: {error.message}</p>}
-          {isSuccess && (
-            <p className="text-green-500">Category updated successfully!</p>
-          )}
         </div>
       </DialogContent>
     </Dialog>

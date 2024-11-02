@@ -5,14 +5,8 @@ const updateCategory = async ({ id, name }) => {
   return response.data;
 };
 
-const useUpdateCategory = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation(updateCategory, {
-    onSuccess: () => {
-      queryClient.invalidateQueries("categories");
-    },
-  });
+const useUpdateCategory = (option) => {
+  return useMutation(updateCategory, option);
 };
 
 export default useUpdateCategory;

@@ -1,21 +1,30 @@
-import Sneaker from "@/Design/Shared/Item";
 import React from "react";
+import FavoriteItem from "@/Design/Shared/FavoriteItem";
+import { useFavorites } from "@/Hook/Favorite/useFavorites";
+import { useRemoveFavorite } from "@/Hook/Favorite/useRemoveFavorite"; // Assuming you've created this hook
 
 const Favorite = () => {
-  const favoriteItems = [
-    { id: 1, name: "Nike Air Max", price: 200 },
-    { id: 2, name: "Adidas Ultraboost", price: 180 },
-    { id: 3, name: "Puma RS-X", price: 150 },
-    { id: 4, name: "Reebok Classic", price: 120 },
-  ];
+  const { data: favorites, isLoading, isError } = useFavorites();
+  const { mutate: removeFavorite } = useRemoveFavorite();
+
+  const handleRemoveFavorite = (productId) => {
+    removeFavorite(productId);
+  };
+
+  if (isLoading)
+    return <p className="text-center">Loading your favorites...</p>;
+  if (isError) return <p className="text-center">Error loading favorites.</p>;
 
   return (
     <div className="p-3">
       <h1 className="text-center text-2xl my-6">Your Most Loved Items</h1>
       <div className="flex flex-row flex-wrap justify-center items-center">
-        {favoriteItems.map((item) => (
-          <div key={item.id} className="w-[400px] p-2">
-            <Sneaker name={item.name} price={item.price} />
+        {favorites.map((item) => (
+          <div key={item._id} className="w-[400px] p-2">
+            <FavoriteItem
+              product={item.productId}
+              onRemoveFavorite={handleRemoveFavorite}
+            />
           </div>
         ))}
       </div>

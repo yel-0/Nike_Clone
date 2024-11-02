@@ -5,7 +5,7 @@ const AdminDashboard = () => {
   return (
     <div className="flex flex-col h-auto space-y-6 ">
       {/* Dashboard Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-blue-200 rounded-lg shadow-sm p-4 flex items-center space-x-4">
           <div>
             <h2 className="text-lg">Overview</h2>
@@ -33,7 +33,7 @@ const AdminDashboard = () => {
             <p className="text-gray-800">Pending Reports: 5</p>
           </div>
         </div>
-      </div>
+      </div> */}
       <UserTable />
     </div>
   );

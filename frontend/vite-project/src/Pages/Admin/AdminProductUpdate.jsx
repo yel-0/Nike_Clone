@@ -13,7 +13,7 @@ import useUpdateProduct from "@/Hook/Product/useUpdateProduct";
 const UpdateProductPage = () => {
   const { id } = useParams();
   const { data: product, isLoading: isProductLoading } = useProductById(id);
-  const { mutate: updateProduct } = useUpdateProduct();
+  const { mutate: updateProduct, isLoading } = useUpdateProduct();
 
   const nameRef = useRef();
   const descriptionRef = useRef();
@@ -27,8 +27,8 @@ const UpdateProductPage = () => {
   const [useFor, setUseFor] = useState("");
   const [gender, setGender] = useState("");
   const [ageGroup, setAgeGroup] = useState("");
-  const [sizeInput, setSizeInput] = useState("");
-  const [colorInput, setColorInput] = useState("");
+  const [sizeInput, setSizeInput] = useState([]);
+  const [colorInput, setColorInput] = useState([]);
   const [stockInput, setStockInput] = useState(0);
 
   useEffect(() => {
@@ -45,12 +45,11 @@ const UpdateProductPage = () => {
       setUseFor(product.useFor || "");
       setGender(product.gender || "");
       setAgeGroup(product.ageGroup || "");
-      setSizeInput(product.sizes ? product.sizes.join(", ") : "");
-      setColorInput(product.colors ? product.colors.join(", ") : "");
+      setSizeInput(product.sizes || []);
+      setColorInput(product.colors || []);
       setStockInput(product.stock || 0);
     }
   }, [product]);
-
   const handleCategoryChange = (categoryId) => {
     setSelectedCategory(categoryId);
   };
@@ -91,35 +90,32 @@ const UpdateProductPage = () => {
     formData.append("useFor", useFor);
     formData.append("gender", gender);
     formData.append("ageGroup", ageGroup);
+    formData.append("stock", stockInput);
 
-    // Append each key feature individually
     keyFeatures.forEach((feature, index) => {
       formData.append(`keyFeatures[${index}]`, feature);
     });
 
-    // Append each tag individually
     selectedTags.forEach((tag, index) => {
       formData.append(`tags[${index}]`, tag);
     });
 
-    // Append each size individually
-    sizeInput.split(",").forEach((size, index) => {
-      formData.append(`sizes[${index}]`, size.trim());
+    sizeInput.forEach((size, index) => {
+      formData.append(`sizes[${index}]`, size);
     });
 
-    // Append each color individually
-    colorInput.split(",").forEach((color, index) => {
-      formData.append(`colors[${index}]`, color.trim());
+    colorInput.forEach((color, index) => {
+      formData.append(`colors[${index}]`, color);
     });
 
-    // Append each image file individually
     images.forEach((image) => {
       formData.append("images", image);
     });
 
-    // Log all form data for debugging
+    // for (const [key, value] of formData.entries()) {
+    //   console.log(`${key}: ${value}`);
+    // }
 
-    // Call the updateProduct mutation directly
     updateProduct({ id, formData });
   };
 
@@ -127,10 +123,20 @@ const UpdateProductPage = () => {
     return <div>Loading...</div>;
   }
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // Prevent form submission on Enter key
+    }
+  };
+
   return (
     <div className="mx-auto w-full bg-[#fff] rounded-lg p-6">
       <h2 className="text-gray-800 mb-4">Update Product</h2>
-      <form onSubmit={handleFormSubmit} className="flex flex-col gap-3">
+      <form
+        onSubmit={handleFormSubmit}
+        onKeyDown={handleKeyDown}
+        className="flex flex-col gap-3"
+      >
         <div className="flex gap-3 text-sm flex-wrap xl:flex-nowrap flex-row justify-start items-start">
           <div className="flex flex-col w-full gap-3">
             <UpdateGeneralInformation
@@ -181,8 +187,9 @@ const UpdateProductPage = () => {
         <button
           type="submit"
           className="bg-blue-500 text-white rounded px-4 py-2 mt-4"
+          disabled={isLoading}
         >
-          Update Product
+          {isLoading ? "Submitting..." : "Update"}
         </button>
       </form>
     </div>

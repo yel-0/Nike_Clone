@@ -30,7 +30,7 @@ const colors = [
   { name: "brown", className: "bg-brown-500" },
 ];
 
-const DiscoverSidebar = ({ filters, setFilters }) => {
+const AdminDiscoverSidebar = ({ filters, setFilters }) => {
   const { data: categories, isLoading } = useFetchCategories();
 
   if (isLoading) return <div>Loading...</div>;
@@ -44,7 +44,7 @@ const DiscoverSidebar = ({ filters, setFilters }) => {
         {categories?.map((category, index) => (
           <Link
             key={index}
-            to={`/discover/${category._id}`}
+            to={`/admin/products/${category._id}/category`}
             className="w-full mt-2"
           >
             <button
@@ -161,4 +161,4 @@ const DiscoverSidebar = ({ filters, setFilters }) => {
   );
 };
 
-export default DiscoverSidebar;
+export default AdminDiscoverSidebar;

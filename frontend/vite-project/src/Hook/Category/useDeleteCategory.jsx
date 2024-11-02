@@ -5,18 +5,8 @@ const deleteCategory = async (id) => {
   return response.data;
 };
 
-const useDeleteCategory = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation(deleteCategory, {
-    onSuccess: () => {
-      queryClient.invalidateQueries("categories");
-      alert("success");
-    },
-    onError: (error) => {
-      console.error("Error deleting category:", error);
-    },
-  });
+const useDeleteCategory = (option) => {
+  return useMutation(deleteCategory, option);
 };
 
 export default useDeleteCategory;

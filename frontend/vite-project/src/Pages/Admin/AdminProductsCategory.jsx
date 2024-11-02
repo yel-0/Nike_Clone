@@ -1,25 +1,160 @@
-import React from "react";
+import React, { useState } from "react";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import useInfiniteFilterProduct from "@/Hook/Product/useInfiniteFilterProduct";
+import DiscoverSidebar from "@/Design/User/DiscoverSidebar";
 import AdminItem from "@/Design/Admin/AdminItem";
-const products = [
-  { id: 1, name: "Nike Air Max", price: "$150" },
-  { id: 2, name: "Adidas Ultraboost", price: "$180" },
-  { id: 3, name: "Puma RS-X", price: "$120" },
-  { id: 4, name: "New Balance 574", price: "$100" },
-  { id: 5, name: "Jordan 1", price: "$160" },
-  { id: 6, name: "Converse Chuck Taylor", price: "$70" },
-  { id: 7, name: "Asics Gel-Kayano", price: "$140" },
-  { id: 8, name: "Vans Old Skool", price: "$60" },
-  { id: 9, name: "Reebok Club C", price: "$85" },
-  { id: 10, name: "Under Armour HOVR", price: "$130" },
-];
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { useLocation, useParams } from "react-router-dom";
+import AdminDiscoverSidebar from "@/Design/Admin/AdminDiscoverSidebar";
 
 const AdminProductsCategory = () => {
+  const location = useLocation();
+  const currentPath = location.pathname.split("/").filter(Boolean);
+  const { id } = useParams();
+  const [filters, setFilters] = useState({
+    categoryId: id,
+    sortBy: "priceAsc",
+    gender: "",
+    colors: [],
+    ageGroup: "",
+    useFor: "",
+  });
+
+  const {
+    data,
+    isLoading,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteFilterProduct(filters);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error loading products.</div>;
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-4">
-      {products.map((product) => (
-        <AdminItem key={product.id} name={product.name} price={product.price} />
-      ))}
-    </div>
+    <SidebarProvider>
+      <div className="relative">
+        <AdminDiscoverSidebar filters={filters} setFilters={setFilters} />
+      </div>
+
+      <main className="p-6 relative w-full">
+        <div className="flex flex-col bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6 md:mb-0">
+          <div className="flex justify-between items-center mb-4">
+            {/* Page Title */}
+            <h1 className="text-2xl  text-gray-900 capitalize">
+              {currentPath[currentPath.length - 1] || "Admin"}
+            </h1>
+
+            {/* Sidebar Toggle (For mobile responsiveness) */}
+
+            {/* <div className="">
+                  <SidebarTrigger className="p-2 hover:text-white bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                    Menu
+                  </SidebarTrigger>
+                </div> */}
+          </div>
+
+          {/* Breadcrumb */}
+          <Breadcrumb className="text-sm mt-2">
+            <BreadcrumbList className="flex items-center space-x-1 text-gray-600">
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  href="/admin/dashboard"
+                  className="text-blue-600 hover:text-blue-500 transition-colors"
+                >
+                  Dashboard
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator className="mx-2 text-gray-400">
+                /
+              </BreadcrumbSeparator>
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  href="/admin"
+                  className="text-blue-600 hover:text-blue-500 transition-colors"
+                >
+                  Admin
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              {currentPath.length > 1 && (
+                <>
+                  <BreadcrumbSeparator className="mx-2 text-gray-400">
+                    /
+                  </BreadcrumbSeparator>
+                  <BreadcrumbItem>
+                    <BreadcrumbPage className="text-gray-500 capitalize">
+                      {currentPath[currentPath.length - 1]}
+                    </BreadcrumbPage>
+                  </BreadcrumbItem>
+                </>
+              )}
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
+        <div className="flex flex-row justify-end gap-3 sticky bg-white top-0 py-3 items-center">
+          <div className="flex flex-row justify-center items-center gap-1">
+            <SidebarTrigger /> <div>Hide Filter</div>
+          </div>
+          <div>
+            <Select
+              onValueChange={(value) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  sortBy: value === "price_low_high" ? "priceAsc" : "priceDesc",
+                }))
+              }
+            >
+              <SelectTrigger className="border-none focus:ring-0 focus:border-none">
+                <SelectValue placeholder="Sort By" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="price_low_high">
+                  Price: Low to High
+                </SelectItem>
+                <SelectItem value="price_high_low">
+                  Price: High to Low
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {data.pages.map((page, pageIndex) =>
+            page.map((product, index) => (
+              <AdminItem key={`${pageIndex}-${index}`} product={product} />
+            ))
+          )}
+        </div>
+
+        {hasNextPage && (
+          <div className="flex justify-center mt-6">
+            <button
+              onClick={() => fetchNextPage()}
+              disabled={isFetchingNextPage}
+              className="bg-black text-white px-6 py-2 rounded-full hover:bg-gray-700 transition duration-300"
+            >
+              {isFetchingNextPage ? "Loading..." : "Load More"}
+            </button>
+          </div>
+        )}
+      </main>
+    </SidebarProvider>
   );
 };
 

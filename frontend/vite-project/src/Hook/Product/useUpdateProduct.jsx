@@ -1,7 +1,10 @@
 // useUpdateProduct.js
 import { useMutation, useQueryClient } from "react-query";
 import axiosInstance from "@/api/axiosInstance";
+import { useToast } from "@/hooks/use-toast";
 const useUpdateProduct = () => {
+  const { toast } = useToast();
+
   const queryClient = useQueryClient();
 
   return useMutation(
@@ -19,12 +22,15 @@ const useUpdateProduct = () => {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries("products");
-        alert("success");
+        toast({
+          title: "Product Update successfully",
+        });
       },
       onError: (error) => {
-        console.error("Error updating product:", error);
-        alert("error");
+        toast({
+          variant: "destructive",
+          title: "Something went wrong",
+        });
       },
     }
   );

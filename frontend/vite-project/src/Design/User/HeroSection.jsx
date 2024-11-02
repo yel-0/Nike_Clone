@@ -9,32 +9,13 @@ import {
 import hero1 from "../../assets/images/hero1.jpg";
 import hero2 from "../../assets/images/hero2.jpg";
 import Hero from "../../assets/images/Hero.jpg";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const HeroSection = () => {
-  const heroImages = [
-    {
-      id: 1,
-      src: Hero,
-      alt: "Hero Image 1",
-      description: "Discover the latest in sneaker fashion.",
-    },
-    {
-      id: 2,
-      src: hero2,
-      alt: "Hero Image 2",
-      description: "Step up your game with our exclusive styles.",
-    },
-    {
-      id: 3,
-      src: hero1,
-      alt: "Hero Image 3",
-      description: "Find your perfect pair today.",
-    },
-  ];
-
   return (
-    <div className="relative p-4 w-full h-screen overflow-hidden">
-      <Carousel
+    <div className="relative p-4 w-full overflow-hidden">
+      {/* <Carousel
         className="h-[550px]"
         opts={{
           loop: true,
@@ -66,7 +47,27 @@ const HeroSection = () => {
         </CarouselContent>
         <CarouselPrevious className="absolute left-4 top-1/2 transform -translate-y-1/2 z-30" />
         <CarouselNext className="absolute right-4 top-1/2 transform -translate-y-1/2 z-30" />
-      </Carousel>
+      </Carousel> */}
+
+      <div className="max-w-7xl mx-auto aspect-w-16 aspect-h-9">
+        <img
+          src="https://res.cloudinary.com/dcgn707fg/image/upload/v1730343200/images/evtvpmjb1kder9hvzsdw.jpg"
+          alt="Nike Hero Section"
+          className="w-full h-full object-cover"
+        />
+      </div>
+      <div className="flex flex-col mt-6 justify-center items-center gap-2 p-4">
+        <div className="text-xl font-bold">Tatum</div>{" "}
+        <div className="font-bold text-7xl">ZERO PREASURE</div>
+        <div className="w-[80%] text-center">
+          Greatness happens when you’re focused on your flight path. This newest
+          colourway ‘Zero Days Off’ speaks to Jayson’s love of the grind and is
+          here to help you elevate your game.
+        </div>
+        <Link to="/discover">
+          <Button className="rounded-full">Shop</Button>
+        </Link>
+      </div>
     </div>
   );
 };

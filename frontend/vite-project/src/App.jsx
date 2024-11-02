@@ -20,13 +20,13 @@ import AdminProductUpdate from "./Pages/Admin/AdminProductUpdate";
 function App() {
   return (
     <div>
-      {/* <Navbar /> */}
+      <Navbar />
 
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/discover" element={<Discover />} />
-        <Route path="/discover/item" element={<DiscoverByItem />} />
+        <Route path="/discover/:id" element={<DiscoverByItem />} />
         <Route path="/product/detail/:id" element={<ProductDetail />} />
         <Route path="/favorite" element={<Favorite />} />
         <Route path="/login" element={<Login />} />
@@ -38,7 +38,10 @@ function App() {
           <Route path="product/:id/update" element={<AdminProductUpdate />} />
 
           <Route path="products" element={<AdminProducts />} />
-          <Route path="products/category" element={<AdminProductsCategory />} />
+          <Route
+            path="products/:id/category"
+            element={<AdminProductsCategory />}
+          />
           <Route path="categories" element={<AdminCategory />} />
         </Route>
       </Routes>

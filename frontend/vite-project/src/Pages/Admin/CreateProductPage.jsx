@@ -1,30 +1,40 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import GeneralInformation from "@/Design/Admin/GeneralInformation";
-import PricingInformation from "./PricingInformation";
-import CategorySelector from "./CategorySelector";
-import UseForSelector from "./UseForSelector";
-import SizeColorStockInput from "./SizeColorStockInput";
-import UploadImages from "./UploadImages";
-import KeyFeaturesInput from "./KeyFeaturesInput";
+import PricingInformation from "../../Design/Admin/PricingInformation";
+import CategorySelector from "../../Design/Admin/CategorySelector";
+import UseForSelector from "../../Design/Admin/UseForSelector";
+import SizeColorStockInput from "../../Design/Admin/SizeColorStockInput";
+import UploadImages from "../../Design/Admin/UploadImages";
+import KeyFeaturesInput from "../../Design/Admin/KeyFeaturesInput";
 import useCreateProduct from "@/Hook/Product/useCreateProduct";
+import { useToast } from "@/hooks/use-toast";
 
 const CreateProductPage = () => {
-  const [sizeInput, setSizeInput] = useState("");
-  const [colorInput, setColorInput] = useState("");
+  const { toast } = useToast();
+
+  const [sizeInput, setSizeInput] = useState([]);
+  const [colorInput, setColorInput] = useState([]);
+
   const [useFor, setUseFor] = useState("");
   const [gender, setGender] = useState("");
   const [ageGroup, setAgeGroup] = useState("");
   const [stockInput, setStockInput] = useState("");
   const [keyFeatures, setKeyFeatures] = useState([]);
 
-  const {
-    mutate: createProduct,
-    isLoading,
-    isError,
-    error,
-    isSuccess,
-  } = useCreateProduct();
+  const { mutate: createProduct, isLoading } = useCreateProduct({
+    onSuccess: () => {
+      toast({
+        title: "Product created successfully",
+      });
+    },
+    onError: () => {
+      toast({
+        variant: "destructive",
+        title: "Something went wrong",
+      });
+    },
+  });
 
   const refs = useRef({
     productNameRef: null,
@@ -132,29 +142,29 @@ const CreateProductPage = () => {
     formSubmissionData.append("ageGroup", ageGroup);
     formSubmissionData.append("stock", parseInt(stockInput) || 0);
 
-    // Append and log key features
+    // Append key features
     keyFeatures.forEach((feature) => {
       formSubmissionData.append("keyFeatures[]", feature);
     });
 
-    // Append and log sizes
-    sizeInput.split(",").forEach((size) => {
+    // Append sizes directly as array items
+    sizeInput.forEach((size) => {
       formSubmissionData.append("sizes[]", size.trim());
     });
 
-    // Append and log colors
-    colorInput.split(",").forEach((color) => {
+    // Append colors directly as array items
+    colorInput.forEach((color) => {
       formSubmissionData.append("colors[]", color.trim());
     });
 
-    // Append and log tags
+    // Append tags
     if (formData.tags.length > 0) {
       formData.tags.forEach((tag) => {
         formSubmissionData.append("tags[]", tag);
       });
     }
 
-    // Append and log images
+    // Append images
     if (formData.imageUrl.length > 0) {
       formData.imageUrl.forEach((file) => {
         formSubmissionData.append("images", file);
@@ -169,9 +179,19 @@ const CreateProductPage = () => {
     createProduct(formSubmissionData);
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+    }
+  };
+
   return (
     <div className="mx-auto w-full bg-[#fff] rounded-lg">
-      <form onSubmit={handleFormSubmit} className="flex flex-col gap-3">
+      <form
+        onSubmit={handleFormSubmit}
+        onKeyDown={handleKeyDown}
+        className="flex flex-col gap-3"
+      >
         <div className="flex gap-3 text-sm flex-wrap xl:flex-nowrap flex-row justify-start items-start">
           <div className="flex flex-col w-full gap-3">
             <GeneralInformation setRefs={setRefs} />
@@ -228,9 +248,9 @@ const CreateProductPage = () => {
           </div>
         </div>
       </form>
-      {isSuccess && (
+      {/* {isSuccess && (
         <p className="text-green-500 mt-2">Product created successfully!</p>
-      )}
+      )} */}
     </div>
   );
 };

@@ -17,6 +17,9 @@ router.put(
 router.delete("/delete/:id", productController.deleteProduct);
 router.get("/getAll", productController.getAllProducts);
 router.get("/category/:categoryId", productController.getProductsByCategoryId);
-router.get("/filter", productController.getFilteredProducts);
+router.get("/getFilteredProducts", productController.getFilteredProducts);
 router.get("/:id", productController.getProductById);
+// Assuming you are using Express Router
+router.get("/by/category", productController.getLatestProductsByCategoryName);
+
 module.exports = router;

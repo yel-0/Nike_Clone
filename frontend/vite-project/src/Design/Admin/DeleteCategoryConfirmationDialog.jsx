@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -8,15 +8,40 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import useDeleteCategory from "@/Hook/Category/useDeleteCategory";
+import { useQueryClient } from "react-query";
+import { useToast } from "@/hooks/use-toast";
 const DeleteCategoryConfirmationDialog = ({ category }) => {
-  const { mutate: deleteCategory, isLoading, isSuccess } = useDeleteCategory();
+  const [open, setOpen] = useState(false);
+
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const {
+    mutate: deleteCategory,
+    isLoading,
+    isSuccess,
+  } = useDeleteCategory({
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["categories"]);
+
+      toast({
+        title: "Category delete successfully",
+      });
+      setOpen(false);
+    },
+    onError: (err) => {
+      toast({
+        variant: "destructive",
+        title: "Something went wrong",
+      });
+    },
+  });
 
   const handleDelete = () => {
     deleteCategory(category._id); // Use category.id for deletion
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger className="bg-red-500 text-white hover:bg-red-600 py-1 px-2 text-sm rounded-md">
         Delete
       </DialogTrigger>
