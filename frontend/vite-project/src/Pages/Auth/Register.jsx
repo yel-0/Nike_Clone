@@ -1,12 +1,14 @@
 import React, { useRef } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useMutation } from "react-query";
 import nikelogo from "../../assets/images/nikelogo.jpg";
+import { useToast } from "@/hooks/use-toast";
 
 const Url = "http://localhost:3000/user";
 function userRegister() {
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   return useMutation(
     async (userData) => {
@@ -15,13 +17,19 @@ function userRegister() {
     },
     {
       onSuccess: () => {
-        alert("Success! You are registered.");
-        setTimeout(() => {
-          navigate("/login");
-        }, 3000);
+        toast({
+          title: "Registration successful",
+          description: "Welcome! Your account has been created successfully.",
+        });
+
+        navigate("/login");
       },
       onError: (error) => {
-        console.error("Registration error:", error);
+        toast({
+          variant: "destructive",
+          title: "Registration failed",
+          description: "Something went wrong. Please try again later.",
+        });
       },
     }
   );
@@ -51,12 +59,13 @@ const Register = () => {
   };
 
   return (
-    <div className="w-full flex flex-col justify-center max-w-lg  m-auto items-start">
+    <div className="w-full flex flex-col justify-center max-w-lg  m-auto items-center">
       <div className="mt-10"></div>
-      <div className="text-3xl flex flex-row justify-start items-center text-start mb-4">
-        <img src={nikelogo} width={100} height={100} alt="" />
-        <span> Enter your email to join us.</span>{" "}
+      <div className="text-2xl md:text-3xl flex flex-col md:flex-row justify-start items-center text-center md:text-start mb-4 space-y-4 md:space-y-0">
+        <img src={nikelogo} width={100} height={100} alt="Nike Logo" />
+        <span className="md:ml-4">Enter your email to join us.</span>
       </div>
+
       <form
         onSubmit={handleSubmit}
         className="bg-white w-[100%] p-[1rem] lg:p-0 lg:w-[600px]"
@@ -111,6 +120,12 @@ const Register = () => {
           </button>
         </div>
       </form>
+      <div className="mt-4 text-sm text-gray-600">
+        Already have an account?{" "}
+        <Link to="/login" className="text-blue-600 ">
+          Login here
+        </Link>
+      </div>
     </div>
   );
 };

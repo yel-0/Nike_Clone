@@ -20,9 +20,10 @@ import AdminProductUpdate from "./Pages/Admin/AdminProductUpdate";
 import { useLocation } from "react-router-dom";
 import Forbidden from "./Pages/Forbidden/Forbidden";
 import NoMatch from "./Pages/NoMatch/NoMatch";
+import ContactPage from "./Pages/Contact/ContactPage";
 function App() {
   const location = useLocation();
-  const hideFooterRoutes = ["/admin", "/login", "/register"];
+  const hideFooterRoutes = ["/admin", "/login", "/register", "/discover"];
   const shouldHideFooter = hideFooterRoutes.some((route) =>
     location.pathname.startsWith(route)
   );
@@ -39,6 +40,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forbidden" element={<Forbidden />} />
+        <Route path="/contact" element={<ContactPage />} />
+
         <Route path="*" element={<NoMatch />} />
         <Route path="/admin" element={<Admin />}>
           <Route path="dashboard" element={<AdminDashboard />} />

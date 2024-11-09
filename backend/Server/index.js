@@ -28,8 +28,7 @@ const categoryRoutes = require("./routes/CategoryRoute");
 app.use("/category", categoryRoutes);
 
 const favoriteRoutes = require("./routes/FavoriteRoute");
-app.use("/favorite", favoriteRoutes);
-// Start the server
+app.use("/favorite", favoriteRoutes); // Start the server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

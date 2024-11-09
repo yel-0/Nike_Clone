@@ -16,9 +16,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <AuthProvider>
           <App />
         </AuthProvider>
+        <Toaster />
       </BrowserRouter>
       <ReactQueryDevtools initialIsOpen={false} />
-      <Toaster />
     </QueryClientProvider>
   </React.StrictMode>
 );

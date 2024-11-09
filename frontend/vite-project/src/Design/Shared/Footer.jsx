@@ -2,9 +2,9 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer className="bg-white text-black py-10  border-t border-gray-300">
-      <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row justify-between space-y-8 md:space-y-0">
+    <footer className="bg-white max-w-7xl m-auto text-black   border-gray-300">
+      <div className=" border-t  w-full  p-10">
+        <div className="flex flex-col md:flex-row justify-between w-full space-y-8 md:space-y-0">
           {/* Company Info */}
           <div className="flex-1">
             <h2 className="text-lg">Your Company</h2>
@@ -84,18 +84,18 @@ const Footer = () => {
         </div>
 
         {/* Bottom Section */}
-        <div className="mt-10 border-t border-gray-300 pt-6 text-center">
-          <p className="text-sm">
-            &copy; 2024 Your Company. All rights reserved.
-          </p>
-          <div className="flex justify-center space-x-6 mt-4">
-            <a href="/" target="_blank" className="hover:underline">
-              Privacy Policy
-            </a>
-            <a href="/" target="_blank" className="hover:underline">
-              Terms of Service
-            </a>
-          </div>
+      </div>
+      <div className="mt-10 w-full  border-t border-gray-300 p-6 text-center">
+        <p className="text-sm">
+          &copy; 2024 Your Company. All rights reserved.
+        </p>
+        <div className="flex justify-center space-x-6 mt-4">
+          <a href="/" target="_blank" className="hover:underline">
+            Privacy Policy
+          </a>
+          <a href="/" target="_blank" className="hover:underline">
+            Terms of Service
+          </a>
         </div>
       </div>
     </footer>

@@ -2,14 +2,16 @@ import React, { useRef } from "react";
 import { useMutation } from "react-query";
 import axios from "axios";
 import nikelogo from "../../assets/images/nikelogo.jpg";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/Provider/AuthProvider";
+import { useToast } from "@/hooks/use-toast";
 
 const Login = () => {
   const emailRef = useRef();
   const passwordRef = useRef();
   const navigate = useNavigate();
   const { login } = useAuth();
+  const { toast } = useToast();
 
   const loginMutation = useMutation(
     (formData) =>
@@ -19,11 +21,18 @@ const Login = () => {
     {
       onSuccess: (token) => {
         login(token);
-
+        toast({
+          title: "Login Successful",
+          description: "Welcome back! You have logged in successfully.",
+        });
         navigate("/");
       },
       onError: (error) => {
-        console.error("Login error:", error);
+        toast({
+          variant: "destructive",
+          title: "Login failed",
+          description: "Please check your email and password, and try again.",
+        });
       },
     }
   );
@@ -40,9 +49,9 @@ const Login = () => {
   return (
     <div className="max-w-lg w-full mx-auto flex flex-col items-center justify-start">
       <div className="mt-10"></div>
-      <div className="text-3xl flex flex-row justify-start items-center text-start mb-4">
+      <div className="text-2xl md:text-3xl flex flex-col md:flex-row justify-start items-center text-center md:text-start mb-4 space-y-4 md:space-y-0">
         <img src={nikelogo} width={100} height={100} alt="Nike Logo" />
-        <span> Enter your email to sign in.</span>
+        <span className="md:ml-4">Enter your email to join us.</span>
       </div>
       <form onSubmit={handleSubmit} className="bg-white w-full px-6 py-5">
         <div className="mb-3">
@@ -81,6 +90,12 @@ const Login = () => {
           Login
         </button>
       </form>
+      <div className="mt-4 text-sm text-gray-600">
+        Don't have an account?{" "}
+        <Link to="/register" className="text-blue-600 ">
+          Register here
+        </Link>
+      </div>
     </div>
   );
 };

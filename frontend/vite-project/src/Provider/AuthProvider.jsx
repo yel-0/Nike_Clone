@@ -1,11 +1,13 @@
 import useAdminStatus from "@/Hook/Users/useAdminStatus";
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const { data, isLoading } = useAdminStatus();
+  const { toast } = useToast();
 
   useEffect(() => {
     const tokenData = JSON.parse(localStorage.getItem("token"));
@@ -31,6 +33,10 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem("token");
     setToken(null);
+    toast({
+      title: "Logged out successfully",
+      description: "You have been logged out. See you again soon!",
+    });
   };
 
   return (

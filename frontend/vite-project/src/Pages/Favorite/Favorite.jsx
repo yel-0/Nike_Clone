@@ -1,11 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import FavoriteItem from "@/Design/Shared/FavoriteItem";
 import { useFavorites } from "@/Hook/Favorite/useFavorites";
 import { useRemoveFavorite } from "@/Hook/Favorite/useRemoveFavorite"; // Assuming you've created this hook
-
+import { useAuth } from "@/Provider/AuthProvider";
+import { useNavigate } from "react-router-dom";
 const Favorite = () => {
   const { data: favorites, isLoading, isError } = useFavorites();
   const { mutate: removeFavorite } = useRemoveFavorite();
+  const { token } = useAuth();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!token) {
+      navigate("/login");
+    }
+  }, [token, navigate]);
 
   const handleRemoveFavorite = (productId) => {
     removeFavorite(productId);

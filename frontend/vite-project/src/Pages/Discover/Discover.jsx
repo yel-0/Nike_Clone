@@ -35,7 +35,7 @@ const Discover = () => {
 
   return (
     <SidebarProvider>
-      <div className="relative">
+      <div className="relative z-10">
         <DiscoverSidebar filters={filters} setFilters={setFilters} />
       </div>
 

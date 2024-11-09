@@ -80,3 +80,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+body {
+  max-width: 1440px;
+  margin: 0 auto; /* Centers the content */
+
+  font-family: Arial, sans-serif; /* Sets a clean, default font */
+  background-color: #fff; /* Light background color */
+
+  line-height: 1.6; /* Improved readability */
+}

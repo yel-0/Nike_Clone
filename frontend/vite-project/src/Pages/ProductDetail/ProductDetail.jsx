@@ -15,15 +15,13 @@ const ProductDetail = () => {
   return (
     <div>
       {/* Product Detail Section */}
-      <div className="flex h-auto relative flex-row justify-start items-start w-full gap-3">
-        {/* Sticky Image Carousel */}
-        <div className="top-0 sticky w-[700px] flex flex-row justify-center items-center p-5">
-          <ItemImageCarousel images={product.imageUrl} />{" "}
-          {/* Pass images from product data */}
+      <div className="flex h-auto relative flex-row justify-start lg:flex-nowrap flex-wrap  items-start w-full gap-3">
+        <div className=" w-full lg:w-[700px]  flex flex-row justify-center items-center p-5">
+          <ItemImageCarousel images={product.imageUrl} product={product} />{" "}
         </div>
 
         {/* Product Description */}
-        <div className="w-[450px] p-5">
+        <div className="w-full lg:w-[450px]  p-5">
           <ItemDescription product={product} />
         </div>
       </div>

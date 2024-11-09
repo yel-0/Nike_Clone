@@ -12,12 +12,14 @@ const ItemDescription = ({ product }) => {
 
   return (
     <div className="flex flex-col justify-start h-full">
-      <h1 className="text-[#D33918] mb-4">{product.tags[0]}</h1>
-      <h1 className="text-xl mb-4">{product.name}</h1>
-      <h1 className="text-base opacity-[.7] capitalize mb-4">
-        {product.gender} {product.ageGroup} {product.useFor}
-      </h1>
-      <h1 className="text-base mb-4">${product.price}</h1>
+      <div className="hidden lg:flex lg:flex-col">
+        <h1 className="text-[#D33918] mb-4">{product.tags[0]}</h1>
+        <h1 className="text-xl mb-4">{product.name}</h1>
+        <h1 className="text-base opacity-[.7] capitalize mb-4">
+          {product.gender} {product.ageGroup} {product.useFor}
+        </h1>
+        <h1 className="text-base mb-4">${product.price}</h1>
+      </div>
 
       {/* Description */}
       <p className="text-gray-600 mb-4 text-justify">{product.description}</p>

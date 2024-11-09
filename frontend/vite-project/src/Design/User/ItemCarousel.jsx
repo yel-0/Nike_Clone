@@ -26,20 +26,23 @@ const ItemCarousel = ({ title, category }) => {
 
   return (
     <div className="relative px-3 max-w-[1300px] m-auto pt-10">
-      <div className="flex flex-row h-[70px] justify-start items-center py-2">
-        <div className="text-2xl select-none">{title}</div>
+      <div className="flex flex-row h-[70px] justify-start items-center p-2">
+        <div className="md:text-2xl text-lg select-none">{title}</div>
       </div>
       <Carousel className="w-full" loop>
-        <CarouselContent>
+        <CarouselContent className="ml-0">
           {products?.map((product) => (
-            <CarouselItem key={product._id} className="basis-1/3">
+            <CarouselItem
+              key={product._id}
+              className="basis-full sm:basis-1/2 lg:basis-1/3 p-2"
+            >
               <Item product={product} />
             </CarouselItem>
           ))}
         </CarouselContent>
-        <div className="absolute h-[70px] flex flex-row w-[20px] top-[-70px] right-[50px]">
-          <CarouselPrevious className="w-[50px] h-[50px]" />
-          <CarouselNext className="w-[50px] h-[50px]" />
+        <div className="absolute h-[70px] flex flex-row w-[20px] top-[-70px]  right-[55px]">
+          <CarouselPrevious className="lg:w-[50px] lg:h-[50px] w-7 h-7 ml-10 lg:m-0" />
+          <CarouselNext className="lg:w-[50px] lg:h-[50px] w-7 h-7 " />
         </div>
       </Carousel>
     </div>

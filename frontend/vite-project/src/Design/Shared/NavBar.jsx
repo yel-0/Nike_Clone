@@ -1,18 +1,19 @@
 import { Send, Heart, Search } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import SearchBox from "./SearchBox";
 import nikelogo from "../../assets/images/nikelogo.jpg";
 import { useAuth } from "@/Provider/AuthProvider";
 import LogoutDialog from "./LogoutDialog";
+import NabBarSideBar from "./NavBarSideBar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 const Navbar = () => {
   const { token, data } = useAuth();
   // const { data, isLoading, isError } = useAdminStatus();
-
   return (
     <nav className="bg-white p-4 shadow-sm">
-      <div className="max-w-7xl mx-auto flex justify-between items-center">
+      <div className="sm:flex max-w-7xl h-[40px] mx-auto hidden justify-between items-center">
         {/* Logo Section */}
         <div className="text-black text-2xl font-bold">
           <Link to="/">
@@ -28,7 +29,7 @@ const Navbar = () => {
           <Link to="/about" className="text-black hover:text-gray-700">
             About
           </Link>
-          <Link to="/products" className="text-black hover:text-gray-700">
+          <Link to="/discover" className="text-black hover:text-gray-700">
             Products
           </Link>
           <Link to="/contact" className="text-black hover:text-gray-700">
@@ -69,6 +70,19 @@ const Navbar = () => {
             </button>
           </Link>
         </div>
+      </div>
+      <div className="flex h-[40px] sm:hidden ">
+        <SidebarProvider>
+          <NabBarSideBar token={token} data={data} />
+          <div className="text-black text-2xl font-bold">
+            <Link to="/">
+              <img src={nikelogo} alt="Nike Logo" width={70} height={70} />
+            </Link>
+          </div>
+          <div className="flex justify-end w-full ">
+            <SidebarTrigger />
+          </div>
+        </SidebarProvider>
       </div>
     </nav>
   );
