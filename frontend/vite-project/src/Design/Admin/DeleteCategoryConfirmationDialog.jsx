@@ -24,14 +24,18 @@ const DeleteCategoryConfirmationDialog = ({ category }) => {
       queryClient.invalidateQueries(["categories"]);
 
       toast({
-        title: "Category delete successfully",
+        title: "Category deleted successfully",
+        description: "The category has been removed from the list.",
       });
+
       setOpen(false);
     },
     onError: (err) => {
       toast({
         variant: "destructive",
-        title: "Something went wrong",
+        title: "Deletion failed",
+        description:
+          "There was an error deleting the category. Please try again.",
       });
     },
   });
@@ -45,7 +49,7 @@ const DeleteCategoryConfirmationDialog = ({ category }) => {
       <DialogTrigger className="bg-red-500 text-white hover:bg-red-600 py-1 px-2 text-sm rounded-md">
         Delete
       </DialogTrigger>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="w-[90%] lg:max-w-lg rounded-lg">
         <DialogHeader>
           <DialogTitle>Are you absolutely sure?</DialogTitle>
           <DialogDescription>

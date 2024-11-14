@@ -27,14 +27,18 @@ const UpdateCategoryDialog = ({ category }) => {
       queryClient.invalidateQueries(["categories"]);
 
       toast({
-        title: "Category Update successfully",
+        title: "Category updated successfully",
+        description: "The category has been updated. Changes are now live!",
       });
+
       setOpen(false);
     },
     onError: (err) => {
       toast({
         variant: "destructive",
-        title: "Something went wrong",
+        title: "Update failed",
+        description:
+          "There was an error updating the category. Please try again.",
       });
     },
   });
@@ -50,7 +54,7 @@ const UpdateCategoryDialog = ({ category }) => {
       <DialogTrigger className="bg-blue-500 text-white hover:bg-blue-600 py-1 px-2 text-sm rounded-md shadow-md">
         Update
       </DialogTrigger>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="w-[90%] lg:max-w-lg rounded-lg">
         <DialogHeader>
           <DialogTitle>Update Category</DialogTitle>
         </DialogHeader>

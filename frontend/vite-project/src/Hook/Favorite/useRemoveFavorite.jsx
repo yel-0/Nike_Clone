@@ -17,13 +17,15 @@ export const useRemoveFavorite = () => {
     onSuccess: () => {
       queryClient.invalidateQueries("favorites");
       toast({
-        title: "Remove item successfully",
+        title: "Item removed successfully",
+        description: "The item was successfully removed from your list.",
       });
     },
     onError: (error) => {
       toast({
-        variant: "destructive",
         title: "Something went wrong",
+        description: "Could not remove the item. Please try again later.",
+        variant: "destructive",
       });
     },
   });

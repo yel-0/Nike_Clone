@@ -33,15 +33,21 @@ const DeleteUserConfirmationDialog = ({ isOpen, userId }) => {
     {
       onSuccess: () => {
         toast({
-          title: "Product Delete successfully",
+          title: "User Deleted Successfully",
+          description: "The selected user has been removed from the database.",
         });
+
+        // Failure toast for user deletion
+
         queryClient.invalidateQueries(["infiniteUsers"]);
         setOpen(false);
       },
       onError: (error) => {
         toast({
-          variant: "destructive",
-          title: "Something went wrong",
+          title: "Failed to Delete User",
+          description:
+            "An error occurred while trying to delete the user. Please try again.",
+          variant: "destructive", // Assuming you have a "destructive" variant for errors
         });
       },
     }
@@ -54,9 +60,9 @@ const DeleteUserConfirmationDialog = ({ isOpen, userId }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger className="bg-red-500 text-white hover:bg-red-600 py-1 px-2 text-sm rounded-md">
-        Delete User
+        Delete
       </DialogTrigger>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="w-[90%] rounded-lg lg:max-w-lg">
         <DialogHeader>
           <DialogTitle>Are you absolutely sure?</DialogTitle>
           <DialogDescription>

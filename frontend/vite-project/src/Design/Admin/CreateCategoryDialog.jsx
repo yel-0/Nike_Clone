@@ -28,13 +28,17 @@ const CreateCategoryDialog = () => {
 
       toast({
         title: "Category created successfully",
+        description: "The category was created and added to the list.",
       });
+
       setOpen(false);
     },
     onError: (err) => {
       toast({
         variant: "destructive",
-        title: "Something went wrong",
+        title: "Creation failed",
+        description:
+          "There was an error creating the category. Please try again.",
       });
     },
   });
@@ -48,10 +52,10 @@ const CreateCategoryDialog = () => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="bg-blue-500 text-white hover:opacity-75 py-1 px-2 text-sm rounded-md shadow-md">
+      <DialogTrigger className="bg-blue-500 text-white hover:opacity-75 p-5 lg:py-1 lg:px-2 text-sm rounded-md shadow-md">
         Add Category
       </DialogTrigger>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="w-[90%] lg:max-w-lg">
         <DialogHeader>
           <DialogTitle>Create New Category</DialogTitle>
         </DialogHeader>

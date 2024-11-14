@@ -12,13 +12,15 @@ export const useAddFavorite = () => {
   return useMutation(addFavorite, {
     onSuccess: (data) => {
       toast({
-        title: "Add to favorite successfully",
+        title: "Added to favorites",
+        description: "Your item was successfully added to your favorites!",
       });
     },
     onError: (error) => {
       toast({
-        variant: "destructive",
         title: "Something went wrong",
+        description: "Could not add to favorites. Please try again later.",
+        variant: "destructive",
       });
     },
   });

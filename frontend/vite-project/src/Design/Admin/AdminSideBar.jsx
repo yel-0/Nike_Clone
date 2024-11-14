@@ -23,6 +23,11 @@ const items = [
     icon: Box,
   },
   {
+    title: "Create Product",
+    url: "/admin/create/product",
+    icon: Box,
+  },
+  {
     title: "Categories",
     url: "/admin/categories",
     icon: Tag,

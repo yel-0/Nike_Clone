@@ -14,7 +14,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <AuthProvider>
-          <App />
+          <div className="max-w-[1300px] mx-auto">
+            <App />
+          </div>
         </AuthProvider>
         <Toaster />
       </BrowserRouter>

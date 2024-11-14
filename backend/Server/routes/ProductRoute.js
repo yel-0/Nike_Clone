@@ -24,5 +24,6 @@ router.get("/getFilteredProducts", productController.getFilteredProducts);
 router.get("/:id", productController.getProductById);
 // Assuming you are using Express Router
 router.get("/by/category", productController.getLatestProductsByCategoryName);
+router.get("/products/search", productController.searchProductsByName);
 
 module.exports = router;

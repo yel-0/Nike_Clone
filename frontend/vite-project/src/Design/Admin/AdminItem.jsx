@@ -7,11 +7,13 @@ import { Link } from "react-router-dom";
 const AdminItem = ({ product }) => {
   return (
     <div className="text-center bg-white">
-      <img
-        src={product.imageUrl[0]} // Or use a fallback image if needed
-        alt={product.name}
-        className="w-[340px] h-[320px] object-cover rounded-md"
-      />
+      <Link to={`/product/detail/${product._id}`}>
+        <img
+          src={product.imageUrl[0]}
+          alt={product.name}
+          className="w-full h-auto max-w-[420px] object-cover mx-auto"
+        />
+      </Link>
 
       <div className="flex w-full flex-col py-2 justify-center items-start">
         <div className="text-[#9E3500]">{product.tags[0]}</div>

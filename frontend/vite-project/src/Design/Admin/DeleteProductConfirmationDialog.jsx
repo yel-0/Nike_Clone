@@ -24,14 +24,17 @@ const DeleteProductConfirmationDialog = ({ id }) => {
     onSuccess: () => {
       queryClient.invalidateQueries("infiniteFilterProduct");
       toast({
-        title: "Product Delete successfully",
+        title: "Product Deleted Successfully",
+        description: "The selected product has been removed from the database.",
       });
       setOpen(false);
     },
     onError: () => {
       toast({
+        title: "Failed to Delete Product",
+        description:
+          "An error occurred while trying to delete the product. Please try again.",
         variant: "destructive",
-        title: "Something went wrong",
       });
     },
   });
@@ -45,7 +48,7 @@ const DeleteProductConfirmationDialog = ({ id }) => {
       <DialogTrigger className="bg-red-500 text-white hover:bg-red-600 py-1 px-2 text-sm rounded-md">
         Delete
       </DialogTrigger>
-      <DialogContent className="max-w-lg">
+      <DialogContent className=" w-[90%] lg:max-w-lg">
         <DialogHeader>
           <DialogTitle>Are you absolutely sure?</DialogTitle>
           <DialogDescription>

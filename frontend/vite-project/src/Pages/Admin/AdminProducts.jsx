@@ -25,7 +25,7 @@ const AdminProducts = () => {
   const currentPath = location.pathname.split("/").filter(Boolean);
   const [filters, setFilters] = useState({
     categoryId: undefined,
-    sortBy: "priceAsc",
+    sortBy: "",
     gender: "",
     colors: [],
     ageGroup: "",

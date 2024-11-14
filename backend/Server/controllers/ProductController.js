@@ -268,18 +268,22 @@ exports.getFilteredProducts = async (req, res) => {
   if (colors) {
     // Split colors into an array if it is provided as a comma-separated string
     const colorArray = Array.isArray(colors) ? colors : colors.split(",");
-
-    // Use the $in operator to filter products that have any of the specified colors
     filter.colors = { $in: colorArray };
   }
 
   if (ageGroup) filter.ageGroup = ageGroup;
   if (useFor) filter.useFor = useFor;
 
-  // Setting sorting options
+  // Setting sorting options, defaulting to latest products if sortBy is not provided
   const sortOptions = {};
-  if (sortBy === "priceAsc") sortOptions.price = 1;
-  if (sortBy === "priceDesc") sortOptions.price = -1;
+  if (sortBy === "priceAsc") {
+    sortOptions.price = 1;
+  } else if (sortBy === "priceDesc") {
+    sortOptions.price = -1;
+  } else {
+    // Default sorting by latest created products
+    sortOptions.createdAt = -1;
+  }
 
   try {
     const products = await Product.find(filter)
@@ -362,5 +366,42 @@ exports.getLatestProductsByCategoryName = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error fetching products by category name", error });
+  }
+};
+
+exports.searchProductsByName = async (req, res) => {
+  const { name } = req.query; // Get the search term from query params
+  const limit = 6; // Limit to the latest 5 matching products
+
+  try {
+    // Check if the name parameter is provided
+    if (!name) {
+      return res.status(400).json({ message: "Search term is required" });
+    }
+
+    // Perform a regex search on the product name (case-insensitive)
+    const products = await Product.find({
+      name: new RegExp(name, "i"), // Case-insensitive search
+    })
+      .sort({ createdAt: -1 }) // Sort by creation date (latest first)
+      .limit(limit)
+      .select("name _id ageGroup imageUrl") // Select name, _id, ageGroup, and imageUrl fields
+      .lean();
+
+    // Modify products to include only the first image in imageUrl
+    const modifiedProducts = products.map((product) => ({
+      ...product,
+      imageUrl:
+        Array.isArray(product.imageUrl) && product.imageUrl.length > 0
+          ? [product.imageUrl[0]] // Keep only the first image in imageUrl
+          : [],
+    }));
+
+    res.status(200).json(modifiedProducts);
+  } catch (error) {
+    console.error("Error searching products by name:", error);
+    res
+      .status(500)
+      .json({ message: "Error searching products by name", error });
   }
 };

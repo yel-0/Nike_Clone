@@ -15,7 +15,7 @@ const ProductDetailDialog = ({ product }) => {
         View Product Details
       </DialogTrigger>
 
-      <DialogContent className="h-[550px] px-16 pt-14 md:rounded-[30px] w-[750px] rounded-xl text-black overflow-scroll">
+      <DialogContent className="h-[550px] px-5 lg:px-16 pt-14 md:rounded-[30px] w-[90%] lg:w-[750px] rounded-xl text-black overflow-scroll">
         <DialogHeader>
           <DialogTitle>
             <div className="flex mb-5 flex-row justify-start items-center gap-2">
