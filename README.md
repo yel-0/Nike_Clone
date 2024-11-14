@@ -21,3 +21,5 @@ This project is a full-stack application for showcasing and managing products. B
 - **Admin Management**: Admins can upload, edit, and delete products.
 - **Favorite Products**: Users can mark products as favorites for quick access.
 - **Responsive Design**: The UI adapts to all the screen sizes for a smooth experience on mobile and desktop.
+  cd frontend/vite-project
+  npm install
