@@ -23,13 +23,16 @@ const useUpdateProduct = () => {
     {
       onSuccess: () => {
         toast({
-          title: "Product Update successfully",
+          title: "Product Updated Successfully",
+          description: "Your product details have been saved and updated.",
         });
       },
       onError: (error) => {
         toast({
           variant: "destructive",
-          title: "Something went wrong",
+          title: "Update Failed",
+          description:
+            "We encountered an issue while updating your product. Please try again.",
         });
       },
     }

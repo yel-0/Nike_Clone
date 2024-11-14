@@ -1,5 +1,4 @@
-import { Home, Box, Heart, Tag, Settings } from "lucide-react";
-
+import { Home, Box, Heart, Tag, Settings, Pencil } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -25,7 +24,7 @@ const items = [
   {
     title: "Create Product",
     url: "/admin/create/product",
-    icon: Box,
+    icon: Pencil,
   },
   {
     title: "Categories",

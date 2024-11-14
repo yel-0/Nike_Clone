@@ -11,7 +11,7 @@ const AdminItem = ({ product }) => {
         <img
           src={product.imageUrl[0]}
           alt={product.name}
-          className="w-full h-auto max-w-[420px] object-cover mx-auto"
+          className="w-full h-auto  max-w-[420px] object-cover mx-auto"
         />
       </Link>
 

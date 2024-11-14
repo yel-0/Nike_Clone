@@ -10,7 +10,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 const Navbar = () => {
   const { token, data } = useAuth();
-  // const { data, isLoading, isError } = useAdminStatus();
+  const [isOpen, setIsOpen] = React.useState(false);
   return (
     <nav className="bg-white p-4 shadow-sm">
       <div className="sm:flex max-w-7xl h-[40px] mx-auto hidden justify-between items-center">
@@ -73,14 +73,19 @@ const Navbar = () => {
       </div>
       <div className="flex h-[40px] sm:hidden ">
         <SidebarProvider>
-          <NabBarSideBar token={token} data={data} />
+          <NabBarSideBar
+            token={token}
+            data={data}
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+          />
           <div className="text-black text-2xl font-bold">
             <Link to="/">
               <img src={nikelogo} alt="Nike Logo" width={70} height={70} />
             </Link>
           </div>
           <div className="flex justify-end w-full ">
-            <SidebarTrigger />
+            <SidebarTrigger onClick={() => setIsOpen(!isOpen)} />
           </div>
         </SidebarProvider>
       </div>

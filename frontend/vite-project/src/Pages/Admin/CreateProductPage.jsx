@@ -25,13 +25,17 @@ const CreateProductPage = () => {
   const { mutate: createProduct, isLoading } = useCreateProduct({
     onSuccess: () => {
       toast({
-        title: "Product created successfully",
+        title: "Product Created Successfully",
+        description:
+          "Your new product is now live and available for customers to view.",
       });
     },
     onError: () => {
       toast({
         variant: "destructive",
-        title: "Something went wrong",
+        title: "Creation Failed",
+        description:
+          "There was an issue creating the product. Please try again or contact support.",
       });
     },
   });
@@ -234,7 +238,7 @@ const CreateProductPage = () => {
           </div>
         </div>
         <div className="w-full flex flex-row justify-end py-4">
-          <div className="flex flex-col md:flex-row space-x-0 md:space-x-4 w-full md:w-auto">
+          <div className="flex flex-col gap-4 md:gap-0 md:flex-row space-x-0 md:space-x-4 w-full md:w-auto">
             <Button className="border-red-500 bg-red-500 hover:bg-red-600 text-white ">
               Cancel
             </Button>

@@ -8,7 +8,7 @@ const Item = ({ product }) => {
         <img
           src={product.imageUrl[0]}
           alt={product.name}
-          className="w-full h-auto max-w-[420px] object-cover mx-auto"
+          className="w-full h-auto  max-w-[420px] object-cover mx-auto"
         />
       </Link>
       <div className="flex w-full max-w-[420px] flex-col py-3 mx-auto justify-center items-start">
